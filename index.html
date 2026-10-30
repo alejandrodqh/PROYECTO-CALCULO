@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PagaYa - Snack</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#">PagaYa <small>SNACK</small></a>
+  <div>
+    <span id="sessionLabel">Bienvenido</span>
+    <button id="logoutBtn" class="btn secondary hidden">Cerrar sesión</button>
+  </div>
+</header>
+
+<main>
+  <!-- INGRESO -->
+  <section id="loginView" class="auth">
+    <div class="card login-card">
+      <p class="eyebrow">PEDIDOS RÁPIDOS</p>
+      <h1>Bienvenido a <span>PagaYa</span></h1>
+      <p class="muted">Ingresa para reservar tus productos.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="client">Cliente</button>
+        <button class="tab" data-tab="owner">Dueña del snack</button>
+      </div>
+
+      <form id="clientLoginForm">
+        <label>Nombre completo</label>
+        <input id="clientName" required placeholder="Tu nombre">
+        <label>Contraseña</label>
+        <input id="clientPassword" type="password" required>
+        <button class="btn primary full">Ingresar como cliente</button>
+        <p class="muted">¿No tienes cuenta? <button type="button" id="showRegister" class="link">Crear cuenta</button></p>
+      </form>
+
+      <form id="registerForm" class="hidden">
+        <label>Nombre completo</label>
+        <input id="registerName" required>
+        <label>Contraseña</label>
+        <input id="registerPassword" type="password" minlength="4" required>
+        <button class="btn primary full">Crear cuenta</button>
+        <p><button type="button" id="backLogin" class="link">Volver</button></p>
+      </form>
+
+      <form id="ownerLoginForm" class="hidden">
+        <label>Usuario administrador</label>
+        <input id="ownerUser" required placeholder="admin">
+        <label>Contraseña</label>
+        <input id="ownerPassword" type="password" required>
+        <button class="btn primary full">Ingresar al sistema</button>
+        <p class="muted">Acceso de prueba: admin / 1234</p>
+      </form>
+      <p id="authMessage" class="message"></p>
+    </div>
+  </section>
+
+  <!-- VISTA CLIENTE -->
+  <section id="clientView" class="hidden">
+    <div class="heading">
+      <div>
+        <p class="eyebrow">MENÚ DEL SNACK</p>
+        <h1>¿Qué deseas comprar?</h1>
+        <p class="muted">Selecciona tus productos y realiza tu reserva.</p>
+      </div>
+      <button id="openCartBtn" class="btn primary">Mi carrito (<span id="cartCount">0</span>)</button>
+    </div>
+
+    <input id="productSearch" class="search" placeholder="Buscar producto...">
+    <div id="productGrid" class="products"></div>
+
+    <div class="card">
+      <h2>Mis reservas</h2>
+      <div id="myOrders"></div>
+    </div>
+  </section>
+
+  <!-- VISTA DUEÑA -->
+  <section id="ownerView" class="hidden">
+    <div class="heading">
+      <div>
+        <p class="eyebrow">ADMINISTRACIÓN</p>
+        <h1>Control del snack</h1>
+        <p class="muted">Administra productos, reservas y cuentas.</p>
+      </div>
+      <span class="admin-label">Administradora</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Ventas de hoy</span><strong id="todaySales">Bs 0,00</strong></div>
+      <div class="stat"><span>Ingresos del mes</span><strong id="monthIncome">Bs 0,00</strong></div>
+      <div class="stat"><span>Gastos del mes</span><strong id="monthExpenses">Bs 0,00</strong></div>
+      <div class="stat"><span>Ganancia estimada</span><strong id="monthProfit">Bs 0,00</strong></div>
+    </div>
+
+    <div class="tabs admin-tabs">
+      <button class="tab active" data-panel="inventoryPanel">Productos</button>
+      <button class="tab" data-panel="ordersPanel">Reservas</button>
+      <button class="tab" data-panel="accountingPanel">Contabilidad</button>
+    </div>
+
+    <div id="inventoryPanel" class="card admin-panel">
+      <div class="heading">
+        <h2>Productos e inventario</h2>
+        <button id="addProductBtn" class="btn primary">+ Añadir producto</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="inventoryTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="ordersPanel" class="card admin-panel hidden">
+      <h2>Reservas de clientes</h2>
+      <div id="allOrders"></div>
+    </div>
+
+    <div id="accountingPanel" class="card admin-panel hidden">
+      <h2>Registrar gastos</h2>
+      <form id="expenseForm" class="expense-form">
+        <input id="expenseDescription" placeholder="Descripción del gasto" required>
+        <input id="expenseAmount" type="number" min="0.01" step="0.01" placeholder="Monto en Bs" required>
+        <button class="btn primary">Registrar gasto</button>
+      </form>
+      <h2>Movimientos</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Monto</th></tr></thead>
+          <tbody id="movementTable"></tbody>
+        </table>
+      </div>
+      <p class="muted">La ganancia estimada es igual a los ingresos menos los gastos registrados.</p>
+    </div>
+  </section>
+</main>
+
+<!-- CARRITO -->
+<div id="cartModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="heading">
+      <h2>Mi reserva</h2>
+      <button class="close" data-close="cartModal">×</button>
+    </div>
+    <div id="cartItems"></div>
+    <div class="total"><span>Total</span><strong id="cartTotal">Bs 0,00</strong></div>
+    <form id="checkoutForm">
+      <label>Forma de pago</label>
+      <select id="paymentMethod">
+        <option value="Efectivo">Efectivo</option>
+        <option value="QR">QR</option>
+      </select>
+      <p class="muted">Si eliges QR, coordina el pago con la dueña al recoger tu pedido.</p>
+      <button class="btn primary full">Confirmar reserva</button>
+    </form>
+  </div>
+</div>
+
+<!-- FORMULARIO PRODUCTO -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="heading">
+      <h2 id="productModalTitle">Añadir producto</h2>
+      <button class="close" data-close="productModal">×</button>
+    </div>
+    <form id="productForm">
+      <input id="editProductId" type="hidden">
+      <label>Nombre del producto</label>
+      <input id="newProductName" required>
+      <label>Precio en Bs</label>
+      <input id="newProductPrice" type="number" min="0.01" step="0.01" required>
+      <label>Cantidad disponible</label>
+      <input id="newProductStock" type="number" min="0" required>
+      <label>Descripción</label>
+      <input id="newProductDescription">
+      <button class="btn primary full">Guardar producto</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
