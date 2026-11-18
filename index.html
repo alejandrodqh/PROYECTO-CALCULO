@@ -151,12 +151,20 @@
         <div class="stat"><span>Unidades en stock</span><strong id="reportStock">0</strong></div>
         <div class="stat"><span>Unidades vendidas</span><strong id="reportUnits">0</strong></div>
         <div class="stat"><span>Ingresos del día</span><strong id="reportIncome">Bs 0,00</strong></div>
+        <div class="stat"><span>Gastos del día</span><strong id="reportExpenses">Bs 0,00</strong></div>
         <div class="stat"><span>Ganancia estimada del día</span><strong id="reportProfit">Bs 0,00</strong></div>
       </div>
       <div class="report-highlight"><strong>Producto más vendido:</strong> <span id="reportTop">Sin ventas entregadas</span></div>
+      <h3>Resumen por día: fecha, ingresos, gastos y producto más vendido</h3>
+      <p class="muted">Esta es la primera hoja del Excel, con una fila por fecha. Los ingresos corresponden a reservas entregadas.</p>
+      <div class="table-wrap"><table class="report-four-col"><thead><tr><th>Fecha</th><th>Ingresos (Bs)</th><th>Gastos (Bs)</th><th>Producto más vendido del día</th></tr></thead><tbody id="reportFourColTable"></tbody></table></div>
+      <h3>Ingresos del día (ventas entregadas)</h3>
+      <div class="table-wrap"><table><thead><tr><th>Hora</th><th>Reserva</th><th>Cliente</th><th>Productos</th><th>Ingreso (Bs)</th></tr></thead><tbody id="reportDailyIncomeTable"></tbody></table></div>
+      <h3>Gastos del día</h3>
+      <div class="table-wrap"><table><thead><tr><th>Hora</th><th>Descripción</th><th>Gasto (Bs)</th></tr></thead><tbody id="reportDailyExpenseTable"></tbody></table></div>
       <h3>Productos y existencias actuales</h3>
       <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Existencia</th><th>Costo unitario</th><th>Precio</th><th>Unidades entregadas (día)</th></tr></thead><tbody id="reportProductTable"></tbody></table></div>
-      <p class="muted">El Excel incluye hojas de Inventario, Ventas, Gastos, Resumen y Datos_MATLAB. Se genera directamente en tu navegador, sin internet.</p>
+      <p class="muted">La primera hoja del Excel tiene Fecha, Ingresos, Gastos y Producto más vendido. También separa Ingresos del dia, Gastos del dia y Resumen diario de la fecha seleccionada; tambien incluye Inventario, Ventas historicas, Gastos historicos y Datos_MATLAB. Se genera directamente en tu navegador, sin internet.</p>
     </div>
   </section>
 </main>
