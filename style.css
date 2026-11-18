@@ -543,3 +543,13 @@ td {
     padding: 23px;
   }
 }
+
+/* REPORTES Y CONTROL CONTABLE */
+.admin-tabs { flex-wrap:wrap; }
+.admin-tabs .tab { min-width:110px; }
+.report-controls { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:18px 0; }
+.report-controls label { margin:0; }
+.report-controls input { width:auto; min-width:175px; margin:0; }
+.report-stats { margin:18px 0; }
+.report-highlight { background:#eaf7f6; border:1px solid #cce9e6; border-radius:10px; padding:16px; margin:12px 0 24px; color:var(--navy); }
+@media(max-width:600px) { .report-controls { align-items:stretch; flex-direction:column; } .report-controls input,.report-controls button { width:100%; } }
