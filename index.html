@@ -1,565 +1,220 @@
 
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  --navy: #172b4d;
-  --teal: #16a6a0;
-  --teal-dark: #10847f;
-  --background: #f4f7fa;
-  --text: #243247;
-  --muted: #718096;
-  --border: #e5eaf0;
-}
-
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-}
-
-button, input, select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.topbar {
-  height: 70px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 7%;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-
-.brand {
-  color: var(--navy);
-  font-size: 23px;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.brand small {
-  display: block;
-  color: var(--teal);
-  font-size: 9px;
-  letter-spacing: 3px;
-}
-
-main {
-  max-width: 1150px;
-  margin: auto;
-  padding: 35px 22px 70px;
-}
-
-h1, h2, h3 {
-  color: var(--navy);
-  margin-top: 0;
-}
-
-h1 {
-  font-size: 32px;
-}
-
-h2 {
-  font-size: 21px;
-}
-
-p {
-  line-height: 1.5;
-}
-
-.muted {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.eyebrow {
-  color: var(--teal);
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-.btn {
-  border: 0;
-  border-radius: 8px;
-  padding: 12px 17px;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.primary {
-  background: var(--teal);
-  color: white;
-}
-
-.primary:hover {
-  background: var(--teal-dark);
-}
-
-.secondary {
-  background: white;
-  border: 1px solid var(--border);
-  color: var(--navy);
-}
-
-.full {
-  width: 100%;
-}
-
-.card, .stat {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 23px;
-  margin-bottom: 22px;
-  box-shadow: 0 5px 20px #1b345009;
-}
-
-.auth {
-  max-width: 460px;
-  margin: 35px auto;
-}
-
-.login-card {
-  padding: 32px;
-}
-
-.login-card h1 {
-  font-size: 28px;
-}
-
-.login-card h1 span {
-  color: var(--teal);
-}
-
-.tabs {
-  display: flex;
-  gap: 5px;
-  background: #edf2f6;
-  border-radius: 9px;
-  padding: 4px;
-  margin: 22px 0;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.tab.active {
-  background: white;
-  color: var(--navy);
-  box-shadow: 0 2px 6px #00000010;
-}
-
-form label {
-  display: block;
-  margin: 13px 0 7px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #46556b;
-}
-
-input, select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #dce3eb;
-  border-radius: 8px;
-  outline: none;
-  background: white;
-  color: var(--text);
-  margin-bottom: 12px;
-}
-
-input:focus, select:focus {
-  border-color: var(--teal);
-}
-
-.link {
-  border: 0;
-  background: transparent;
-  color: var(--teal-dark);
-  font-weight: bold;
-}
-
-.message {
-  color: #d94b55;
-  font-size: 12px;
-}
-
-.heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 22px;
-}
-
-.heading p {
-  margin: 6px 0;
-}
-
-.search {
-  max-width: 400px;
-  margin-bottom: 22px;
-}
-
-.products {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 17px;
-  margin-bottom: 30px;
-}
-
-.product {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 18px;
-  box-shadow: 0 5px 18px #1b345009;
-}
-
-.product-icon {
-  height: 75px;
-  display: grid;
-  place-items: center;
-  background: #eaf7f6;
-  border-radius: 10px;
-  font-size: 34px;
-  margin-bottom: 14px;
-}
-
-.product h3 {
-  font-size: 16px;
-  margin-bottom: 6px;
-}
-
-.product p {
-  color: var(--muted);
-  font-size: 12px;
-  min-height: 30px;
-}
-
-.product-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.price {
-  color: var(--navy);
-  font-weight: bold;
-}
-
-.stock {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-.admin-label {
-  background: #eaf7f6;
-  color: var(--teal-dark);
-  padding: 9px 13px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 13px;
-  margin: 25px 0;
-}
-
-.stat span {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.stat strong {
-  display: block;
-  color: var(--navy);
-  font-size: 21px;
-  margin-top: 12px;
-}
-
-.admin-tabs {
-  margin-bottom: 0;
-}
-
-.admin-panel {
-  margin-top: 0;
-}
-
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 570px;
-  text-align: left;
-}
-
-th {
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  padding: 13px;
-  border-bottom: 1px solid var(--border);
-}
-
-td {
-  font-size: 12px;
-  padding: 14px 13px;
-  border-bottom: 1px solid #edf0f4;
-}
-
-.small-btn {
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--navy);
-  padding: 7px 9px;
-  border-radius: 6px;
-  font-size: 10px;
-  margin: 2px;
-}
-
-.delete {
-  color: #d94b55;
-}
-
-.status {
-  display: inline-block;
-  background: #eaf7f6;
-  color: #087c76;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.low-stock {
-  color: #d18b22;
-  font-weight: bold;
-}
-
-.order-row {
-  border-top: 1px solid var(--border);
-  padding: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  font-size: 12px;
-}
-
-.order-info {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 5px;
-}
-
-.expense-form {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr auto;
-  gap: 10px;
-  align-items: end;
-}
-
-.expense-form input {
-  margin: 0;
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: #14243c99;
-  display: grid;
-  place-items: center;
-  padding: 18px;
-  z-index: 10;
-}
-
-.modal-card {
-  background: white;
-  width: min(100%, 450px);
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 15px;
-  padding: 25px;
-}
-
-.close {
-  border: 0;
-  background: #edf2f6;
-  border-radius: 7px;
-  width: 32px;
-  height: 32px;
-  font-size: 21px;
-}
-
-.total {
-  display: flex;
-  justify-content: space-between;
-  padding: 17px 0;
-  color: var(--navy);
-}
-
-.total strong {
-  font-size: 20px;
-}
-
-.cart-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
-  font-size: 12px;
-}
-
-.remove {
-  border: 0;
-  background: transparent;
-  color: #d94b55;
-  font-size: 11px;
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--navy);
-  color: white;
-  padding: 12px 18px;
-  border-radius: 8px;
-  font-size: 12px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.toast.show {
-  opacity: 1;
-}
-
-.empty {
-  padding: 20px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-@media (max-width: 850px) {
-  .products {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  main {
-    padding: 25px 14px;
-  }
-
-  .topbar {
-    padding: 0 15px;
-  }
-
-  .heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .products {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  .product {
-    padding: 12px;
-  }
-
-  .product-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .product-footer button {
-    width: 100%;
-  }
-
-  .stats {
-    gap: 8px;
-  }
-
-  .stat {
-    padding: 14px;
-  }
-
-  .stat strong {
-    font-size: 17px;
-  }
-
-  .expense-form {
-    grid-template-columns: 1fr;
-  }
-
-  .login-card {
-    padding: 23px;
-  }
-}
-
-/* REPORTES Y CONTROL CONTABLE */
-.admin-tabs { flex-wrap:wrap; }
-.admin-tabs .tab { min-width:110px; }
-.report-controls { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:18px 0; }
-.report-controls label { margin:0; }
-.report-controls input { width:auto; min-width:175px; margin:0; }
-.report-stats { margin:18px 0; }
-.report-highlight { background:#eaf7f6; border:1px solid #cce9e6; border-radius:10px; padding:16px; margin:12px 0 24px; color:var(--navy); }
-@media(max-width:600px) { .report-controls { align-items:stretch; flex-direction:column; } .report-controls input,.report-controls button { width:100%; } }
-
-/* Resumen diario de cuatro columnas, colorido y legible */
-.report-four-col {min-width:650px; margin:12px 0 24px; border:1px solid #dce8ef; border-radius:12px; overflow:hidden;}
-.report-four-col thead th {background:#17466a; color:#fff; font-size:12px; padding:17px 15px; text-transform:none;}
-.report-four-col tbody tr:nth-child(odd) {background:#edf8fb;}
-.report-four-col tbody tr:nth-child(even) {background:#f2fbf5;}
-.report-four-col tbody td {font-size:13px; padding:15px; font-weight:600;}
-.report-four-col tbody td:nth-child(2) {color:#08775f;}
-.report-four-col tbody td:nth-child(3) {color:#b45309;}
-.report-four-col tbody td:nth-child(4) {color:#17466a;}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PagaYa - Snack</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#">PagaYa <small>SNACK</small></a>
+  <div>
+    <span id="sessionLabel">Bienvenido</span>
+    <button id="logoutBtn" class="btn secondary hidden">Cerrar sesión</button>
+  </div>
+</header>
+
+<main>
+  <!-- INGRESO -->
+  <section id="loginView" class="auth">
+    <div class="card login-card">
+      <p class="eyebrow">PEDIDOS RÁPIDOS</p>
+      <h1>Bienvenido a <span>PagaYa</span></h1>
+      <p class="muted">Ingresa para reservar tus productos.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="client">Cliente</button>
+        <button class="tab" data-tab="owner">Dueña del snack</button>
+      </div>
+
+      <form id="clientLoginForm">
+        <label>Nombre completo</label>
+        <input id="clientName" required placeholder="Tu nombre">
+        <label>Contraseña</label>
+        <input id="clientPassword" type="password" required>
+        <button class="btn primary full">Ingresar como cliente</button>
+        <p class="muted">¿No tienes cuenta? <button type="button" id="showRegister" class="link">Crear cuenta</button></p>
+      </form>
+
+      <form id="registerForm" class="hidden">
+        <label>Nombre completo</label>
+        <input id="registerName" required>
+        <label>Contraseña</label>
+        <input id="registerPassword" type="password" minlength="4" required>
+        <button class="btn primary full">Crear cuenta</button>
+        <p><button type="button" id="backLogin" class="link">Volver</button></p>
+      </form>
+
+      <form id="ownerLoginForm" class="hidden">
+        <label>Usuario administrador</label>
+        <input id="ownerUser" required placeholder="admin">
+        <label>Contraseña</label>
+        <input id="ownerPassword" type="password" required>
+        <button class="btn primary full">Ingresar al sistema</button>
+        <p class="muted">Acceso de prueba: admin / 1234</p>
+      </form>
+      <p id="authMessage" class="message"></p>
+    </div>
+  </section>
+
+  <!-- VISTA CLIENTE -->
+  <section id="clientView" class="hidden">
+    <div class="heading">
+      <div>
+        <p class="eyebrow">MENÚ DEL SNACK</p>
+        <h1>¿Qué deseas comprar?</h1>
+        <p class="muted">Selecciona tus productos y realiza tu reserva.</p>
+      </div>
+      <button id="openCartBtn" class="btn primary">Mi carrito (<span id="cartCount">0</span>)</button>
+    </div>
+
+    <input id="productSearch" class="search" placeholder="Buscar producto...">
+    <div id="productGrid" class="products"></div>
+
+    <div class="card">
+      <h2>Mis reservas</h2>
+      <div id="myOrders"></div>
+    </div>
+  </section>
+
+  <!-- VISTA DUEÑA -->
+  <section id="ownerView" class="hidden">
+    <div class="heading">
+      <div>
+        <p class="eyebrow">ADMINISTRACIÓN</p>
+        <h1>Control del snack</h1>
+        <p class="muted">Administra productos, reservas y cuentas.</p>
+      </div>
+      <span class="admin-label">Administradora</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Ventas de hoy</span><strong id="todaySales">Bs 0,00</strong></div>
+      <div class="stat"><span>Ingresos del mes</span><strong id="monthIncome">Bs 0,00</strong></div>
+      <div class="stat"><span>Gastos del mes</span><strong id="monthExpenses">Bs 0,00</strong></div>
+      <div class="stat"><span>Ganancia estimada</span><strong id="monthProfit">Bs 0,00</strong></div>
+    </div>
+
+    <div class="tabs admin-tabs">
+      <button class="tab active" data-panel="inventoryPanel">Productos</button>
+      <button class="tab" data-panel="ordersPanel">Reservas</button>
+      <button class="tab" data-panel="accountingPanel">Contabilidad</button>
+      <button class="tab" data-panel="reportsPanel">Reportes Excel</button>
+    </div>
+
+    <div id="inventoryPanel" class="card admin-panel">
+      <div class="heading">
+        <h2>Productos e inventario</h2>
+        <button id="addProductBtn" class="btn primary">+ Añadir producto</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Producto</th><th>Precio</th><th>Costo</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="inventoryTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="ordersPanel" class="card admin-panel hidden">
+      <h2>Reservas de clientes</h2>
+      <div id="allOrders"></div>
+    </div>
+
+    <div id="accountingPanel" class="card admin-panel hidden">
+      <h2>Registrar gastos</h2>
+      <form id="expenseForm" class="expense-form">
+        <input id="expenseDescription" placeholder="Descripción del gasto" required>
+        <input id="expenseAmount" type="number" min="0.01" step="0.01" placeholder="Monto en Bs" required>
+        <button class="btn primary">Registrar gasto</button>
+      </form>
+      <h2>Movimientos</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Monto</th></tr></thead>
+          <tbody id="movementTable"></tbody>
+        </table>
+      </div>
+      <p class="muted">Las ganancias consideran el costo unitario de productos entregados y los gastos registrados. No incluyen impuestos ni otros costos no registrados.</p>
+    </div>
+    <div id="reportsPanel" class="card admin-panel hidden">
+      <h2>Control diario y exportación a Excel</h2>
+      <p class="muted">Selecciona una fecha para consultar las ventas entregadas, las existencias y el producto más vendido.</p>
+      <div class="report-controls">
+        <label for="reportDate">Fecha del reporte</label>
+        <input type="date" id="reportDate">
+        <button class="btn primary" id="downloadExcelBtn" type="button">Descargar Excel (.xlsx)</button>
+      </div>
+      <div class="stats report-stats">
+        <div class="stat"><span>Unidades en stock</span><strong id="reportStock">0</strong></div>
+        <div class="stat"><span>Unidades vendidas</span><strong id="reportUnits">0</strong></div>
+        <div class="stat"><span>Ingresos del día</span><strong id="reportIncome">Bs 0,00</strong></div>
+        <div class="stat"><span>Gastos del día</span><strong id="reportExpenses">Bs 0,00</strong></div>
+        <div class="stat"><span>Ganancia estimada del día</span><strong id="reportProfit">Bs 0,00</strong></div>
+      </div>
+      <div class="report-highlight"><strong>Producto más vendido:</strong> <span id="reportTop">Sin ventas entregadas</span></div>
+      <h3>Resumen por día: fecha, ingresos, gastos y producto más vendido</h3>
+      <p class="muted">Esta es la primera hoja del Excel, con una fila por fecha. Los ingresos corresponden a reservas entregadas.</p>
+      <div class="table-wrap"><table class="report-four-col"><thead><tr><th>Fecha</th><th>Ingresos (Bs)</th><th>Gastos (Bs)</th><th>Producto más vendido del día</th></tr></thead><tbody id="reportFourColTable"></tbody></table></div>
+      <h3>Ingresos del día (ventas entregadas)</h3>
+      <div class="table-wrap"><table><thead><tr><th>Hora</th><th>Reserva</th><th>Cliente</th><th>Productos</th><th>Ingreso (Bs)</th></tr></thead><tbody id="reportDailyIncomeTable"></tbody></table></div>
+      <h3>Gastos del día</h3>
+      <div class="table-wrap"><table><thead><tr><th>Hora</th><th>Descripción</th><th>Gasto (Bs)</th></tr></thead><tbody id="reportDailyExpenseTable"></tbody></table></div>
+      <h3>Productos y existencias actuales</h3>
+      <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Existencia</th><th>Costo unitario</th><th>Precio</th><th>Unidades entregadas (día)</th></tr></thead><tbody id="reportProductTable"></tbody></table></div>
+      <p class="muted">La primera hoja del Excel tiene Fecha, Ingresos, Gastos y Producto más vendido. También separa Ingresos del dia, Gastos del dia y Resumen diario de la fecha seleccionada; tambien incluye Inventario, Ventas historicas, Gastos historicos y Datos_MATLAB. Se genera directamente en tu navegador, sin internet.</p>
+    </div>
+  </section>
+</main>
+
+<!-- CARRITO -->
+<div id="cartModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="heading">
+      <h2>Mi reserva</h2>
+      <button class="close" data-close="cartModal">×</button>
+    </div>
+    <div id="cartItems"></div>
+    <div class="total"><span>Total</span><strong id="cartTotal">Bs 0,00</strong></div>
+    <form id="checkoutForm">
+      <label>Forma de pago</label>
+      <select id="paymentMethod">
+        <option value="Efectivo">Efectivo</option>
+        <option value="QR">QR</option>
+      </select>
+      <p class="muted">Si eliges QR, coordina el pago con la dueña al recoger tu pedido.</p>
+      <button class="btn primary full">Confirmar reserva</button>
+    </form>
+  </div>
+</div>
+
+<!-- FORMULARIO PRODUCTO -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="heading">
+      <h2 id="productModalTitle">Añadir producto</h2>
+      <button class="close" data-close="productModal">×</button>
+    </div>
+    <form id="productForm">
+      <input id="editProductId" type="hidden">
+      <label>Nombre del producto</label>
+      <input id="newProductName" required>
+      <label>Precio en Bs</label>
+      <input id="newProductPrice" type="number" min="0.01" step="0.01" required>
+      <label>Costo de compra por unidad (Bs)</label>
+       <input id="newProductCost" type="number" min="0" step="0.01" required>
+       <label>Cantidad disponible</label>
+      <input id="newProductStock" type="number" min="0" required>
+      <label>Descripción</label>
+      <input id="newProductDescription">
+      <button class="btn primary full">Guardar producto</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
