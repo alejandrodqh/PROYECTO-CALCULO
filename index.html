@@ -102,6 +102,7 @@
       <button class="tab active" data-panel="inventoryPanel">Productos</button>
       <button class="tab" data-panel="ordersPanel">Reservas</button>
       <button class="tab" data-panel="accountingPanel">Contabilidad</button>
+      <button class="tab" data-panel="reportsPanel">Reportes Excel</button>
     </div>
 
     <div id="inventoryPanel" class="card admin-panel">
@@ -111,7 +112,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Producto</th><th>Precio</th><th>Costo</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="inventoryTable"></tbody>
         </table>
       </div>
@@ -136,7 +137,26 @@
           <tbody id="movementTable"></tbody>
         </table>
       </div>
-      <p class="muted">La ganancia estimada es igual a los ingresos menos los gastos registrados.</p>
+      <p class="muted">Las ganancias consideran el costo unitario de productos entregados y los gastos registrados. No incluyen impuestos ni otros costos no registrados.</p>
+    </div>
+    <div id="reportsPanel" class="card admin-panel hidden">
+      <h2>Control diario y exportación a Excel</h2>
+      <p class="muted">Selecciona una fecha para consultar las ventas entregadas, las existencias y el producto más vendido.</p>
+      <div class="report-controls">
+        <label for="reportDate">Fecha del reporte</label>
+        <input type="date" id="reportDate">
+        <button class="btn primary" id="downloadExcelBtn" type="button">Descargar Excel (.xlsx)</button>
+      </div>
+      <div class="stats report-stats">
+        <div class="stat"><span>Unidades en stock</span><strong id="reportStock">0</strong></div>
+        <div class="stat"><span>Unidades vendidas</span><strong id="reportUnits">0</strong></div>
+        <div class="stat"><span>Ingresos del día</span><strong id="reportIncome">Bs 0,00</strong></div>
+        <div class="stat"><span>Ganancia estimada del día</span><strong id="reportProfit">Bs 0,00</strong></div>
+      </div>
+      <div class="report-highlight"><strong>Producto más vendido:</strong> <span id="reportTop">Sin ventas entregadas</span></div>
+      <h3>Productos y existencias actuales</h3>
+      <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Existencia</th><th>Costo unitario</th><th>Precio</th><th>Unidades entregadas (día)</th></tr></thead><tbody id="reportProductTable"></tbody></table></div>
+      <p class="muted">El Excel incluye hojas de Inventario, Ventas, Gastos, Resumen y Datos_MATLAB. Se genera directamente en tu navegador, sin internet.</p>
     </div>
   </section>
 </main>
@@ -175,7 +195,9 @@
       <input id="newProductName" required>
       <label>Precio en Bs</label>
       <input id="newProductPrice" type="number" min="0.01" step="0.01" required>
-      <label>Cantidad disponible</label>
+      <label>Costo de compra por unidad (Bs)</label>
+       <input id="newProductCost" type="number" min="0" step="0.01" required>
+       <label>Cantidad disponible</label>
       <input id="newProductStock" type="number" min="0" required>
       <label>Descripción</label>
       <input id="newProductDescription">
