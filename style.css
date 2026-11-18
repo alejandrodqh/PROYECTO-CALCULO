@@ -553,3 +553,13 @@ td {
 .report-stats { margin:18px 0; }
 .report-highlight { background:#eaf7f6; border:1px solid #cce9e6; border-radius:10px; padding:16px; margin:12px 0 24px; color:var(--navy); }
 @media(max-width:600px) { .report-controls { align-items:stretch; flex-direction:column; } .report-controls input,.report-controls button { width:100%; } }
+
+/* Resumen diario de cuatro columnas, colorido y legible */
+.report-four-col {min-width:650px; margin:12px 0 24px; border:1px solid #dce8ef; border-radius:12px; overflow:hidden;}
+.report-four-col thead th {background:#17466a; color:#fff; font-size:12px; padding:17px 15px; text-transform:none;}
+.report-four-col tbody tr:nth-child(odd) {background:#edf8fb;}
+.report-four-col tbody tr:nth-child(even) {background:#f2fbf5;}
+.report-four-col tbody td {font-size:13px; padding:15px; font-weight:600;}
+.report-four-col tbody td:nth-child(2) {color:#08775f;}
+.report-four-col tbody td:nth-child(3) {color:#b45309;}
+.report-four-col tbody td:nth-child(4) {color:#17466a;}
