@@ -1,6 +1,4 @@
 
-
-
 const $ = id => document.getElementById(id);
 
 const STORAGE = "pagaya_datos";
@@ -685,9 +683,30 @@ function mostrarReportes() {
   $("reportStock").textContent = db.productos.reduce((s,p)=>s+p.stock,0);
   $("reportUnits").textContent = r.unidades;
   $("reportIncome").textContent = dinero(r.ingresos);
+  $("reportExpenses").textContent = dinero(r.gastoTotal);
   $("reportProfit").textContent = dinero(r.ganancia);
+  const hora = iso => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? "--:--" : d.toLocaleTimeString("es-BO",{hour:"2-digit",minute:"2-digit"}); };
+  $("reportDailyIncomeTable").innerHTML = r.ventas.length ? r.ventas.map(v => `<tr><td>${hora(v.fechaEntrega||v.fecha)}</td><td>${escapar(v.id)}</td><td>${escapar(v.cliente)}</td><td>${v.productos.map(p=>escapar(p.nombre)+" x"+p.cantidad).join(", ")}</td><td>${dinero(v.total)}</td></tr>`).join("") : '<tr><td colspan="5">No se registraron ingresos por ventas entregadas este día.</td></tr>';
+  $("reportDailyExpenseTable").innerHTML = r.gastos.length ? r.gastos.map(g => `<tr><td>${hora(g.fecha)}</td><td>${escapar(g.descripcion)}</td><td>${dinero(g.monto)}</td></tr>`).join("") : '<tr><td colspan="3">No se registraron gastos este día.</td></tr>';
   $("reportTop").textContent = r.top;
+  mostrarTablaCuatroColumnas();
   $("reportProductTable").innerHTML = db.productos.map(p=>`<tr><td>${escapar(p.nombre)}</td><td>${p.stock}</td><td>${dinero(p.costo||0)}</td><td>${dinero(p.precio)}</td><td>${r.cantidades.get(p.nombre)||0}</td></tr>`).join("") || '<tr><td colspan="5">Sin productos.</td></tr>';
+}
+// Tabla principal: cada fecha contiene ingresos, gastos y producto con mas unidades entregadas.
+function filasResumenDiario() {
+  const fechas = new Set();
+  for (const pedido of db.reservas) if (ventaReal(pedido)) fechas.add(fechaLocal(pedido.fechaEntrega || pedido.fecha));
+  for (const gasto of db.gastos) fechas.add(fechaLocal(gasto.fecha));
+  fechas.add($("reportDate").value || fechaHoy());
+  return [...fechas].filter(Boolean).sort((a,b)=>b.localeCompare(a)).map(fecha => {
+    const r = resumenDia(fecha);
+    return [fecha, r.ingresos, r.gastoTotal, r.top];
+  });
+}
+function mostrarTablaCuatroColumnas() {
+  const cuerpo = $("reportFourColTable");
+  if (!cuerpo) return;
+  cuerpo.innerHTML = filasResumenDiario().map((f,i)=>`<tr class="${i%2?'report-alt':''}"><td>${escapar(f[0])}</td><td>${dinero(f[1])}</td><td>${dinero(f[2])}</td><td>${escapar(f[3])}</td></tr>`).join("");
 }
 // XLSX mínimo: formato Office Open XML, ZIP sin compresión, compatible con Excel y MATLAB.
 function crc32(bytes) {
@@ -711,37 +730,88 @@ function zipArchivos(archivos) {
 }
 function xmlEsc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");}
 function letraCol(n){let s="";for(n++;n;n=Math.floor((n-1)/26))s=String.fromCharCode(65+(n-1)%26)+s;return s;}
-function hojaXML(filas){
-  const rows=filas.map((fila,i)=>`<row r="${i+1}">${fila.map((v,k)=>{
+function hojaXML(filas, destacada=false){
+  const rows=filas.map((fila,i)=>`<row r="${i+1}"${i===0?' ht="32" customHeight="1"':''}>${fila.map((v,k)=>{
     const celda=letraCol(k)+(i+1);
-    if(typeof v==="number" && Number.isFinite(v)) return `<c r="${celda}"><v>${v}</v></c>`;
-    return `<c r="${celda}" t="inlineStr"><is><t>${xmlEsc(v)}</t></is></c>`;
+    const estilo= destacada ? (i===0?1:(k===1?3:(k===2?4:(i%2===0?2:5)))) : (i===0?1:(i%2===0?2:0));
+    if(typeof v==="number" && Number.isFinite(v)) return `<c r="${celda}" s="${estilo}"><v>${v}</v></c>`;
+    return `<c r="${celda}" s="${estilo}" t="inlineStr"><is><t>${xmlEsc(v)}</t></is></c>`;
   }).join("")}</row>`).join("");
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${rows}</sheetData></worksheet>`;
+  const columnas=destacada?'<cols><col min="1" max="1" width="19" customWidth="1"/><col min="2" max="3" width="23" customWidth="1"/><col min="4" max="4" width="48" customWidth="1"/></cols>':'';
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>${columnas}<sheetData>${rows}</sheetData>${destacada?`<autoFilter ref="A1:D${Math.max(2,filas.length)}"/>`:''}</worksheet>`;
+}
+function estilosXML(){
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FF067565"/><name val="Calibri"/></font></fonts>
+  <fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF17466A"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE6F4FA"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE6F5ED"/><bgColor indexed="64"/></patternFill></fill></fills>
+  <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="2" fontId="2" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1" applyNumberFormat="1"/><xf numFmtId="2" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1" applyNumberFormat="1"/><xf numFmtId="0" fontId="0" fillId="4" borderId="0" xfId="0" applyFill="1"/></cellXfs>
+  <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
 }
 function crearExcel(hojas){
-  const archivos=[], tipos=['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'];
+  const archivos=[], tipos=['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'];
   const libros=[],relaciones=[];
-  hojas.forEach(([nombre,filas],i)=>{const n=i+1;libros.push(`<sheet name="${xmlEsc(nombre)}" sheetId="${n}" r:id="rId${n}"/>`);relaciones.push(`<Relationship Id="rId${n}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${n}.xml"/>`);tipos.push(`<Override PartName="/xl/worksheets/sheet${n}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`);archivos.push([`xl/worksheets/sheet${n}.xml`,hojaXML(filas)]);});
+  hojas.forEach(([nombre,filas],i)=>{const n=i+1;libros.push(`<sheet name="${xmlEsc(nombre)}" sheetId="${n}" r:id="rId${n}"/>`);relaciones.push(`<Relationship Id="rId${n}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${n}.xml"/>`);tipos.push(`<Override PartName="/xl/worksheets/sheet${n}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`);archivos.push([`xl/worksheets/sheet${n}.xml`,hojaXML(filas,i===0)]);});
+  relaciones.push(`<Relationship Id="rId${hojas.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>`);
   tipos.push('</Types>');
   archivos.push(['[Content_Types].xml',tipos.join('')]);
   archivos.push(['_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>']);
   archivos.push(['xl/workbook.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${libros.join('')}</sheets></workbook>`]);
   archivos.push(['xl/_rels/workbook.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relaciones.join('')}</Relationships>`]);
+  archivos.push(['xl/styles.xml',estilosXML()]);
   return zipArchivos(archivos);
 }
 function descargarReporte() {
   if(usuarioActual?.tipo!=="dueña") return;
-  const fecha=$("reportDate").value || fechaHoy(), r=resumenDia(fecha);
-  const inventario=[["ID","Producto","Stock_actual","Costo_unitario_Bs","Precio_venta_Bs","Valor_stock_Bs"],...db.productos.map(p=>[p.id,p.nombre,p.stock,Number(p.costo)||0,p.precio,p.stock*(Number(p.costo)||0)])];
-  const ventas=[["Fecha_entrega","ID_reserva","Cliente","Producto","Cantidad","Precio_unitario_Bs","Costo_unitario_Bs","Total_Bs","Costo_total_Bs","Estado","Metodo_pago"]];
-  for(const pedido of db.reservas)for(const item of pedido.productos) ventas.push([fechaLocal(pedido.fechaEntrega||pedido.fecha),pedido.id,pedido.cliente,item.nombre,item.cantidad,item.precio,Number(item.costo)||0,item.cantidad*item.precio,item.cantidad*(Number(item.costo)||0),pedido.estado,pedido.pago]);
-  const gastos=[["Fecha","Descripcion","Monto_Bs"],...db.gastos.map(g=>[fechaLocal(g.fecha),g.descripcion,g.monto])];
-  const resumen=[["Fecha","Unidades_vendidas","Ingresos_Bs","Costo_productos_Bs","Gastos_Bs","Ganancia_estimada_Bs","Producto_mas_vendido"],[fecha,r.unidades,r.ingresos,r.costos,r.gastoTotal,r.ganancia,r.top]];
-  const matlab=[["Fecha","Unidades_vendidas","Ingresos_Bs","Costo_productos_Bs","Gastos_Bs","Ganancia_estimada_Bs"],[fecha,r.unidades,r.ingresos,r.costos,r.gastoTotal,r.ganancia]];
-  const blob=crearExcel([["Inventario",inventario],["Ventas",ventas],["Gastos",gastos],["Resumen",resumen],["Datos_MATLAB",matlab]]);
-  const url=URL.createObjectURL(blob), a=document.createElement("a");a.href=url;a.download=`PagaYa_Reporte_${fecha}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-  aviso("Reporte Excel descargado correctamente.");
+  const fecha = $("reportDate").value || fechaHoy();
+  const r = resumenDia(fecha);
+  const ingresosDia = [["Fecha","Hora","ID_reserva","Cliente","Productos","Ingreso_Bs","Costo_productos_Bs"]];
+  const gastosDia = [["Fecha","Hora","Descripcion","Gasto_Bs"]];
+  const movimientosDia = [["Fecha","Hora","Tipo","Descripcion","Ingreso_Bs","Gasto_Bs","Saldo_movimiento_Bs"]];
+  const hora = iso => {const d=new Date(iso);return Number.isNaN(d.getTime())?"":d.toTimeString().slice(0,8);};
+  for (const pedido of r.ventas) {
+    const iso = pedido.fechaEntrega || pedido.fecha;
+    const detalle = pedido.productos.map(p=>p.nombre+" x"+p.cantidad).join(", ");
+    ingresosDia.push([fecha,hora(iso),pedido.id,pedido.cliente,detalle,pedido.total,costoReserva(pedido)]);
+    movimientosDia.push([fecha,hora(iso),"Ingreso",pedido.id+" - "+pedido.cliente,pedido.total,0,pedido.total]);
+  }
+  for (const g of r.gastos) {
+    gastosDia.push([fecha,hora(g.fecha),g.descripcion,g.monto]);
+    movimientosDia.push([fecha,hora(g.fecha),"Gasto",g.descripcion,0,g.monto,-g.monto]);
+  }
+  movimientosDia.splice(1,movimientosDia.length-1,...movimientosDia.slice(1).sort((a,b)=>a[1].localeCompare(b[1])));
+  ingresosDia.push(["TOTAL DEL DÍA","","","","",r.ingresos,r.costos]);
+  gastosDia.push(["TOTAL DEL DÍA","","",r.gastoTotal]);
+  movimientosDia.push(["TOTAL DEL DÍA","","","",r.ingresos,r.gastoTotal,r.ingresos-r.gastoTotal]);
+  const resumen = [
+    ["Fecha","Unidades_vendidas","Ingresos_del_dia_Bs","Gastos_del_dia_Bs","Saldo_caja_estimado_Bs","Costo_productos_vendidos_Bs","Ganancia_estimada_Bs","Producto_mas_vendido"],
+    [fecha,r.unidades,r.ingresos,r.gastoTotal,r.ingresos-r.gastoTotal,r.costos,r.ganancia,r.top]
+  ];
+  const matlab = [
+    ["Fecha","Unidades_vendidas","Ingresos_Bs","Gastos_Bs","Costo_productos_Bs","Saldo_caja_estimado_Bs","Ganancia_estimada_Bs"],
+    [fecha,r.unidades,r.ingresos,r.gastoTotal,r.costos,r.ingresos-r.gastoTotal,r.ganancia]
+  ];
+  const inventario = [["ID","Producto","Stock_actual","Costo_unitario_Bs","Precio_venta_Bs","Valor_stock_Bs"],...db.productos.map(p=>[p.id,p.nombre,p.stock,Number(p.costo)||0,p.precio,p.stock*(Number(p.costo)||0)])];
+  const ventasHistoricas = [["Fecha_entrega","ID_reserva","Cliente","Producto","Cantidad","Precio_unitario_Bs","Costo_unitario_Bs","Total_Bs","Costo_total_Bs","Estado","Metodo_pago"]];
+  for(const pedido of db.reservas) for(const item of pedido.productos) ventasHistoricas.push([fechaLocal(pedido.fechaEntrega||pedido.fecha),pedido.id,pedido.cliente,item.nombre,item.cantidad,item.precio,Number(item.costo)||0,item.cantidad*item.precio,item.cantidad*(Number(item.costo)||0),pedido.estado,pedido.pago]);
+  const gastosHistoricos = [["Fecha","Descripcion","Monto_Bs"],...db.gastos.map(g=>[fechaLocal(g.fecha),g.descripcion,g.monto])];
+  const resumenPorFecha = [["Fecha","Ingresos del día (Bs)","Gastos del día (Bs)","Producto más vendido del día"], ...filasResumenDiario()];
+  const blob=crearExcel([
+    ["Resumen por dia",resumenPorFecha],
+    ["Resumen diario",resumen],
+    ["Ingresos del dia",ingresosDia],
+    ["Gastos del dia",gastosDia],
+    ["Movimientos del dia",movimientosDia],
+    ["Inventario",inventario],
+    ["Ventas historicas",ventasHistoricas],
+    ["Gastos historicos",gastosHistoricos],
+    ["Datos_MATLAB",matlab]
+  ]);
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`PagaYa_Ingresos_Gastos_${fecha}.xlsx`;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  aviso("Excel descargado: fecha, ingresos, gastos y producto mas vendido.");
 }
 $("downloadExcelBtn").addEventListener("click",descargarReporte);
-
